@@ -1,0 +1,15 @@
+{
+  "name": "cors-proxy",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "Streaming HTTP proxy for Vercel with configurable access control",
+  "engines": {
+    "node": "24.x"
+  },
+  "scripts": {
+    "dev": "node --env-file-if-exists=.env.local scripts/dev.js",
+    "start": "node --env-file-if-exists=.env.local scripts/dev.js",
+    "test": "node --test"
+  }
+}

@@ -1,0 +1,15 @@
+{
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "framework": null,
+  "build": {
+    "env": {
+      "NODEJS_HELPERS": "0"
+    }
+  },
+  "functions": {
+    "api/proxy.js": {
+      "maxDuration": 300,
+      "supportsCancellation": true
+    }
+  }
+}
