@@ -3,7 +3,7 @@
 部署到 Vercel 的通用 HTTP/HTTPS 代理，使用 Node.js 24 原生模块，无第三方运行时依赖。
 
 ```text
-POST https://cors-proxy.charon2050.cn/api/proxy?url=https%3A%2F%2Fopenrouter.ai%2Fapi%2Fv1%2Fresponses
+POST https://cors-proxy.example.com/api/proxy?url=https%3A%2F%2Fopenrouter.ai%2Fapi%2Fv1%2Fresponses
 ```
 
 支持 GET、POST、PUT、PATCH、DELETE、HEAD、WebDAV 等 HTTP 方法，OPTIONS 由代理直接返回预检响应。支持 SSE、二进制和普通响应流；不解析 JSON，不自动解压，不自动重试，不跟随目标重定向。响应体逐块传输，遵循下游背压；客户端断开时取消上游请求。
@@ -14,7 +14,7 @@ POST https://cors-proxy.charon2050.cn/api/proxy?url=https%3A%2F%2Fopenrouter.ai%
 2. Framework Preset 选择 **Other**，Root Directory 为项目根目录。无需设置 Build Command 或 Output Directory。Node.js Version 使用 **24.x**。
 3. 在 **Settings → Functions** 确认启用 **Fluid Compute**。项目的 `vercel.json` 已为 `api/proxy.js` 设置 `maxDuration: 300`。
 4. 在 **Environment Variables** 中按需设置下方变量。所有访问控制默认关闭，部署前可配置 `ALLOWED_CLIENT_IPS` 或 `PROXY_TOKEN`。变量修改后重新部署。
-5. 部署后，在 **Settings → Domains** 添加 `cors-proxy.charon2050.cn`，按 Vercel 界面提示设置 DNS。该域名仅用于示例，项目不会自动创建域名或 DNS 记录。
+5. 部署后，在 **Settings → Domains** 添加所绑定的域名，按 Vercel 界面提示设置 DNS。
 6. 如需任意浏览器访问，确保该部署的 **Deployment Protection** 不要求 Vercel 登录；平台拦截发生在应用之前，应用无法为这类响应补 CORS 头。访问控制可由本项目的 IP 白名单和密钥承担。
 
 项目通过 `vercel.json` 的 `build.env.NODEJS_HELPERS=0` 禁用 Vercel 原生 Node.js helpers，避免其提前读取请求体；这与 Next.js 的 `api.bodyParser` 配置不同。不要在平台环境变量中将 `NODEJS_HELPERS` 覆盖为其他值。项目同时设置 `supportsCancellation: true`，让 Vercel 在客户端断开时取消调用。应用无需持久磁盘、数据库或构建产物。
@@ -46,7 +46,7 @@ Vercel 对请求体存在约 **4.5 MB** 的平台限制；设置更大的 `MAX_R
 ```javascript
 const target = 'https://openrouter.ai/api/v1/responses';
 const response = await fetch(
-  `https://cors-proxy.charon2050.cn/api/proxy?url=${encodeURIComponent(target)}`,
+  `https://cors-proxy.example.com/api/proxy?url=${encodeURIComponent(target)}`,
   {
     method: 'POST',
     credentials: 'omit',
@@ -84,14 +84,14 @@ if (tail) console.log(tail);
 ```javascript
 const target = 'https://example.com/search?q=a+b&page=2';
 const response = await fetch(
-  `https://cors-proxy.charon2050.cn/api/proxy?url=${encodeURIComponent(target)}`,
+  `https://cors-proxy.example.com/api/proxy?url=${encodeURIComponent(target)}`,
 );
 ```
 
 ### curl：检查预检
 
 ```bash
-curl -i -X OPTIONS 'https://cors-proxy.charon2050.cn/api/proxy' \
+curl -i -X OPTIONS 'https://cors-proxy.example.com/api/proxy' \
   -H 'Origin: https://example.com' \
   -H 'Access-Control-Request-Method: POST' \
   -H 'Access-Control-Request-Headers: authorization,content-type,x-proxy-token'
